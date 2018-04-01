@@ -1,0 +1,18 @@
+{
+  "name": "classicrock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "d3": "^5.0.0",
+    "d3-force": "^1.1.0",
+    "d3-hierarchy": "^1.1.5",
+    "d3-selection-multi": "^1.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

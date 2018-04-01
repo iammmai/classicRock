@@ -1,0 +1,30 @@
+body {
+    background-color: #202020
+}
+
+.content {
+    width: 800px;
+    margin: auto;
+    padding: 30px
+}
+
+.header img {
+    margin-left: -33px;
+    display: block;
+    padding: 0px
+}
+
+p {
+font-family: AmericanTypewriter;
+font-size: 14px;
+color: #FFFFFF;
+letter-spacing: 0.75px;
+line-height: 19px;
+}
+
+h2 {
+font-family: AmericanTypewriter-Bold;
+font-size: 24px;
+color: #FFFFFF;
+letter-spacing: 1.08px;
+}
