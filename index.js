@@ -1,4 +1,5 @@
 import { data } from './data.js'
+/* function to return a grouped dataset, but was easier with d3.nest()
 function getCounted(data){
     const getArtist = function(obj) {
         return obj.artist
@@ -16,7 +17,7 @@ function getCounted(data){
 }
 
 const dataset = getCounted(data)
-
+*/
 const nestedData = d3.nest()
     .key(function(d) { return d.artist; })
     .entries(data);
@@ -34,8 +35,15 @@ const svg = d3.select(".bubbleChart")
         height: h
     })
 
-//const getRadius = function (d) { return Math.sqrt(d.values.length/Math.PI)*10}
-const getRadius = function (d) { return d.values.length *1.2}
+const radiusScale = d3.scaleSqrt()
+    .domain([1,100])
+    .range([3,80])
+
+const getRadius = function(d) {
+    return radiusScale(d.values.length)
+}
+
+//const getRadius = function (d) { return d.values.length *1.2}
 const getColor = function (d) {
     if(d.values.length >= 20) {
         return "#FFFFFF"
@@ -58,6 +66,7 @@ const circles = svg.selectAll(".artist")
         "r" : getRadius,
         "artist" : function (d) { return d.key}
     })
+
 
 //Define the force simulation
 const ticked = function () {
