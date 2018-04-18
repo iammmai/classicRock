@@ -20,6 +20,8 @@ font-size: 14px;
 color: #FFFFFF;
 letter-spacing: 0.75px;
 line-height: 19px;
+pointer-events: none
+
 }
 
 h2 {
@@ -27,4 +29,17 @@ font-family: AmericanTypewriter-Bold;
 font-size: 24px;
 color: #FFFFFF;
 letter-spacing: 1.08px;
+pointer-events: none
+
+}
+
+.tooltip {
+    background-color: #101010;
+    border-radius: 5px ;
+    box-shadow: 0 2px 3px 1px rgba(0,0,0,0.53); 
+    height: 20px ;
+    width: 100px ;
+    position: relative ;
+    display: none;
+    pointer-events: none;
 }

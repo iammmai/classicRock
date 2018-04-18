@@ -19,14 +19,14 @@ function getCounted(data){
 const dataset = getCounted(data)
 */
 const nestedData = d3.nest()
-    .key(function(d) { return d.artist; })
+    .key((d) => d.artist)
     .entries(data);
 
 console.log(nestedData)
 
 //Make the bubbl chart
 const w = 800
-const h = 800
+const h = 1000
 
 const svg = d3.select(".bubbleChart")
     .append("svg")
@@ -34,27 +34,19 @@ const svg = d3.select(".bubbleChart")
         width: w,
         height: h
     })
+    .style("z-index", "-1")
+    .style("position", "absolute")
 
 const radiusScale = d3.scaleSqrt()
     .domain([1,100])
     .range([3,80])
 
-const getRadius = function(d) {
-    return radiusScale(d.values.length)
-}
+const getRadius = (d) => radiusScale(d.values.length)
 
-//const getRadius = function (d) { return d.values.length *1.2}
-const getColor = function (d) {
-    if(d.values.length >= 20) {
-        return "#FFFFFF"
-    } else if (d.values.length >= 10) {
-        return "#FF2A8D"
-    } else if (d.values.length >= 5) {
-        return "#A657EC"
-    } else {
-        return "#75FFE0"
-    }
-}
+const getColor = (d) => 
+(d.values.length >= 20) ?  "#FFFFFF" 
+: (d.values.length >= 10) ? "#FF2A8D"
+: (d.values.length >= 5) ? "#A657EC" : "#75FFE0"
 
 const circles = svg.selectAll(".artist")
     .data(nestedData)
@@ -64,22 +56,59 @@ const circles = svg.selectAll(".artist")
         "class": "artist",
         "fill": getColor,
         "r" : getRadius,
-        "artist" : function (d) { return d.key}
+        "artist" : (d) => d.key
+    })
+    .on("mouseover", function(d) {
+        let xpos = parseFloat(d3.select(this).attr("cx"))
+        let ypos = parseFloat(d3.select(this).attr("cy"))
+
+        d3.select(".tooltip")
+            .style("display", "block")
+            .style("left", xpos + "px")
+            .style("top", ypos + "px")
+            .select("p")
+            .text(d.key)
+    })
+    .on("mouseout", function() {
+        d3.select(".tooltip")
+        .style("display", "none")
     })
 
 
 //Define the force simulation
 const ticked = function () {
     circles.attrs({
-        "cx" : function(d) { return d.x },
-        "cy" : function(d) { return d.y }
+        "cx" : (d) => d.x ,
+        "cy" : (d) => d.y
     })
 }  
 
 const simulation = d3.forceSimulation(nestedData)
     .force("center", d3.forceCenter(w/2, h/2))
+    //.force("x", d3.forceX(w/2).strength(0.05))
+    //.force("y", d3.forceY(h/2).strength(0.05))
     .force("charge", d3.forceManyBody().strength(-0.5))
     .force("collision", d3.forceCollide().radius(getRadius))
+    
     .on("tick", ticked)
 
- 
+    
+const getForceX = (d) =>
+    (d.values.length >= 20) ? 400
+    : (d.values.length >= 10) ? 800
+    : (d.values.length >= 5) ? 400 : 800
+
+const getForceY = (d) =>
+    (d.values.length >= 20) ? 400
+    : (d.values.length >= 10) ? 400
+    : (d.values.length >= 5) ? 800 : 800
+
+d3.select(".sort")
+    .on("click", () => {
+    simulation.force("y", d3.forceY(getForceY))
+    .force("x", d3.forceX(getForceX))
+    .force("collision", d3.forceCollide(Math.pow(getRadius,0.5)))
+        .alphaTarget(0.1)
+        .restart()
+    }
+    )
