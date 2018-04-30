@@ -34,12 +34,9 @@ pointer-events: none
 }
 
 .tooltip {
-    background-color: #101010;
-    border-radius: 5px ;
-    box-shadow: 0 2px 3px 1px rgba(0,0,0,0.53); 
-    height: 20px ;
-    width: 100px ;
-    position: relative ;
+    position: absolute ;
     display: none;
+    padding-top: 60px;
     pointer-events: none;
+    width: 100px
 }

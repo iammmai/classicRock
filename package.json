@@ -7,7 +7,8 @@
     "d3": "^5.0.0",
     "d3-force": "^1.1.0",
     "d3-hierarchy": "^1.1.5",
-    "d3-selection-multi": "^1.0.1"
+    "d3-selection-multi": "^1.0.1",
+    "simple-autoreload-server": "^0.2.7"
   },
   "devDependencies": {},
   "scripts": {
