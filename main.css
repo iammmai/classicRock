@@ -3,7 +3,7 @@ body {
 }
 
 .content {
-    width: 800px;
+    width: 80%;
     margin: auto;
     padding: 30px
 }
@@ -12,6 +12,19 @@ body {
     margin-left: -33px;
     display: block;
     padding: 0px
+}
+.column {
+    float: left
+}
+
+#left {
+    width: 20%;
+    float: left
+}
+
+#right {
+    width: 80%;
+    float: left
 }
 
 p {
@@ -33,10 +46,34 @@ pointer-events: none
 
 }
 
+ul {
+    font-family: AmericanTypewriter;
+    font-size: 12px;
+    color: #FFFFFF;
+    letter-spacing: 0.75px;
+    line-height: 19px;
+    pointer-events: none;
+    list-style: none;
+}
+
 .tooltip {
     position: absolute ;
     display: none;
     padding-top: 60px;
     pointer-events: none;
     width: 100px
+}
+
+.axis path {
+    stroke: white
+}
+
+.axis line {
+    stroke: white
+}
+
+.axis text {
+    fill: white;
+    font-family: AmericanTypewriter;
+    font-size: 12px;
 }

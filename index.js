@@ -1,31 +1,11 @@
 import { data } from './data.js'
-/* function to return a grouped dataset, but was easier with d3.nest()
-function getCounted(data){
-    const getArtist = function(obj) {
-        return obj.artist
-    }
-    const counted = data.reduce(function(countedSongs, currentSong) {
-        const artistName = getArtist(currentSong)
-        if (artistName in countedSongs) {
-            countedSongs[artistName]++
-        } else {
-            countedSongs[artistName] = 1
-        }
-        return countedSongs
-    }, {})
-    return counted
-}
 
-const dataset = getCounted(data)
-*/
 const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)))
 
 const nestedData = d3.nest().key(d => d.artist).entries(data)
 
-console.log(nestedData)
-
 // Make the bubbl chart
-const w = 800
+const w = 900
 const h = 1000
 
 const svg = d3
@@ -141,34 +121,90 @@ d3.select('.sort').on('click', () => {
 })
 
 // Make the next chart
-const padding = 20
+const chartHeight = 400
+const chartWidth = w * 0.80
+const padding = 50
 
+const isBy = name => song => name == song.key
+
+const hasYear = song => song.key !== 'null'
+
+const songsByArtist = (songs, artist) => {
+  const selected = songs.filter(isBy(artist))
+  return selected[0].values
+}
+
+const isMostActive = artist => artist.values.length > 7
+
+//the data:
 const groupByYear = d3.nest()
-  .key(d => d.artist)
-  .key(d => d.releaseYear).sortKeys(d3.ascending)
-  .entries(data)
+.key(d => d.artist)
+.key(d => d.releaseYear).sortKeys(d3.ascending)
+.entries(data)
 
-console.log(groupByYear)
+const newData = songsByArtist(groupByYear, 'Aerosmith').filter(hasYear)
+
+const mostActiveArtists = groupByYear.filter(isMostActive)
+
+// the scales:
 const xScale = d3.scaleLinear()
-  .domain([
-  d3.min(groupByYear, function(d) { return d.values; }),
-  d3.max(groupByYear, function(d) { return d.values; })
-  ])
-.range([padding, w - padding]);
+.domain(
+d3.extent(newData, d => parseFloat(d.key))
+)
+.range([padding, chartWidth - padding]);
 
+const rScale = d3.scaleSqrt()
+.domain(d3.extent(newData, d => d.values.length))
+.range([10, 50])
+
+//Define X axis
+const xAxis = d3.axisBottom()
+.scale(xScale)
+.ticks(5)
+.tickFormat(d3.format('.0f'))
+
+
+//build the chart
 const svgChart = d3.select('.timeChart')
   .append('svg')
   .attrs({
-    width: w,
-    height: h
+    width: chartWidth,
+    height: chartHeight
   })
 
   svgChart.selectAll('circle')
-    .data(groupByYear)
+    .data(newData)
     .enter()
     .append('circle')
     .attrs({
-      cx: d => xScale(d.values),
+      cx: d => xScale(parseFloat(d.key)),
       cy: 200,
-      r: 20
+      r: d => rScale(d.values.length),
+      fill: '#FF2A8D',
+      opacity: 0.6
     })
+
+    //Create X axis
+    svgChart.append("g")
+    .attrs({
+      class: 'axis',
+      transform: 'translate(0,' + (chartHeight - padding) + ')'
+    })
+    .call(xAxis);
+      
+    //create list
+    const makeUl = array => {
+      const list = document.createElement('ul')
+      array.forEach(element => {
+        const listItem = document.createElement('li')
+        listItem.appendChild(document.createTextNode(element.key))
+        list.appendChild(listItem)
+      })
+      return list
+    }
+
+    document.getElementById('left').appendChild(makeUl(mostActiveArtists))
+
+    console.log(groupByYear)
+    console.log(newData)
+    console.log(mostActiveArtists)
